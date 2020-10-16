@@ -1,7 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './css/video.scss'
 
+import Timer from './Timer'
+
 function Video(props) {
+
+  const [media, setMedia] = useState(null);
 
   let mediaRef = React.createRef();
   let controlsRef = React.createRef();
@@ -15,31 +19,23 @@ function Video(props) {
   let timerRef = React.createRef();
   let timerBarRef = React.createRef();
 
+  // https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Client-side_web_APIs/Video_and_audio_APIs
+
   useEffect(() => {
-    /**
-     * Implements event listeners for those Refs 
-     */
     mediaRef.current.removeAttribute('controls');
     controlsRef.current.style.visibility = 'visible'
-
-    playRef.current.addEventListener('click', playPauseMedia);
-    stopRef.current.addEventListener('click', stopMedia);
-    mediaRef.current.addEventListener('ended', stopMedia);
-
-    // Seeking back and forth
-    rwdRef.current.addEventListener('click', mediaBackward);
-    fwdRef.current.addEventListener('click', mediaForward);
-    mediaRef.current.addEventListener('timeupdate', setTime);
   }, [])
 
+  useEffect(() => {
+    setMedia(mediaRef.current)
+  }, [mediaRef])
   /**
    * HANDLER EVENTS
    */
 
   function playPauseMedia() {
-    const media = mediaRef.current;
-    const play = playRef.current;
-    
+    // const media = mediaRef.current;
+    const play = playRef.current;    
     if(media.paused) {
       play.setAttribute('data-icon', 'u');
       media.play()
@@ -58,42 +54,11 @@ function Video(props) {
   }
 
   function mediaBackward() {
-    const media = mediaRef.current;
-    return media.currentTime -= 3;
+    return media ? media.currentTime -= 3 : '';
   }
 
   function mediaForward() {
-    const media = mediaRef.current;
-    return media.currentTime += 3;
-  }
-
-  function setTime() {
-    const media = mediaRef.current;
-    let minutes = Math.floor(media.currentTime/60);
-    let seconds = Math.floor(media.currentTime - minutes * 60);
-
-    let minuteValue;
-    let secondValue;
-
-    if(minutes < 10) {
-      minuteValue = '0' + minutes;
-    } 
-
-    if (seconds < 10) {
-      secondValue = '0' + seconds;
-    }
-
-    else {
-      secondValue = seconds;
-    }
-
-    // Timer
-    let mediatime = `${minuteValue}:${secondValue}`;
-    timerRef.current.textContent = mediatime;
-
-    // Time bar
-    let barLength = timerWrapperRef.current.clientWidth * (media.currentTime/media.duration);
-    timerBarRef.current.style.width = `${barLength}px`;
+    return media ? media.currentTime += 3 : '';
   }
 
   /**
@@ -108,38 +73,56 @@ function Video(props) {
           type={`video/mp4`}
         />
       </video>
+      
 
       <div ref={controlsRef} className="video-controls">
-        <button
-          ref={playRef}
-          className='play'
-          data-icon='P'
-          aria-label='play pause toggle'></button>
-        <button
-          ref={stopRef}
-          className='stop'
-          data-icon='S'
-          aria-label='stop'></button>
-        
-        {/* Timer */}
-        <div
-          ref={timerWrapperRef}
-          className='timers'>
-          <div className='timerBar' ref={timerBarRef}></div>
-          <span
-            ref={timerRef} aria-label='timer'></span>
+        <div className="top-controller">
+          {/* Timer */}
+          <div
+            className='timers'>
+              <Timer
+                media={media}
+                timerBar={timerBarRef}
+                timer={timerRef}  
+                timerWrapper={timerWrapperRef}
+              />
+            <div ref={timerWrapperRef} style={{width:"90%", backgroundColor: "black"}}>
+              <div className='timerBar' ref={timerBarRef}></div>
+            </div>
+            <div>
+              <span
+                style={{width:"10%"}} ref={timerRef} aria-label='timer'></span>
+            </div>
+          </div>
         </div>
 
-        <button
-          ref={rwdRef}
-          className='rwd'
-          data-icon='B' 
-          aria-label='rewind' />
-        <button
-          ref={fwdRef}
-          className='fwd'
-          data-icon='F'
-          aria-label='fast forward' />
+        <div className='bottom-controller'>
+          <button
+            ref={playRef}
+            onClick={ () => playPauseMedia() }
+            className='play'
+            data-icon='P'
+            aria-label='play pause toggle'></button>
+          <button
+            ref={stopRef}
+            onClick={ () => stopMedia() }
+            className='stop'
+            data-icon='S'
+            aria-label='stop'></button>
+
+          <button
+            ref={rwdRef}
+            onClick={ () => mediaBackward() }
+            className='rwd'
+            data-icon='B' 
+            aria-label='rewind' />
+          <button
+            ref={fwdRef}
+            onClick={ () => mediaForward() }
+            className='fwd'
+            data-icon='F'
+            aria-label='fast forward' />
+        </div>
       </div>
     </div>
   )
