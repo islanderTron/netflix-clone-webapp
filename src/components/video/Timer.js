@@ -2,7 +2,14 @@ import React from 'react';
 import { useEffect } from 'react';
 
 function Timer(props) {
-  
+
+  /**
+   * Things to do: 
+   * - build event handlers and render 
+   * - build unit test
+   * */  
+
+  // Save those codes 
   // console.log('test', props.media)
   // const media = mediaRef.current;
   // let minutes = Math.floor(media.currentTime/60);
