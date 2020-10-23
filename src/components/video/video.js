@@ -1,64 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import './css/video.scss'
 
-import Timer from './Timer'
+// Components
+import Timer from './Timer';
+import Play from './Play';
+import Stop from './Stop'
+import BackForward from './BackForward';
 
 function Video(props) {
 
   const [media, setMedia] = useState(null);
+  const [duration, setDuration] = useState()
 
-  let mediaRef = React.createRef();
-  let controlsRef = React.createRef();
-
-  let playRef = React.createRef();
-  let stopRef = React.createRef();
-  let rwdRef = React.createRef();
-  let fwdRef = React.createRef();
-
-  let timerWrapperRef = React.createRef();
-  let timerRef = React.createRef();
-  let timerBarRef = React.createRef();
-
-  // https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Client-side_web_APIs/Video_and_audio_APIs
+  let mediaRef = useRef();
+  let controlsRef = useRef();
+  let playRef = useRef();
 
   useEffect(() => {
-    mediaRef.current.removeAttribute('controls');
-    controlsRef.current.style.visibility = 'visible'
-  }, [])
+    // mediaRef.current.removeAttribute('controls');
+    controlsRef.current.style.visibility = 'visible';
+    mediaRef.current.disablePictureInPicture = true;
 
-  useEffect(() => {
-    setMedia(mediaRef.current)
-  }, [mediaRef])
-  /**
-   * HANDLER EVENTS
-   */
+    setMedia(mediaRef.current);
 
-  function playPauseMedia() {
-    // const media = mediaRef.current;
-    const play = playRef.current;    
-    if(media.paused) {
-      play.setAttribute('data-icon', 'u');
-      media.play()
-    } else {
-      play.setAttribute('data-icon', 'P');
-      media.pause()
+    mediaRef.current.ondurationchange = (event) => {
+      mediaDuration(event.srcElement)
     }
-  }
+    // setDuration(mediaRef)
+  }, [mediaRef.current]);
 
-  function stopMedia() {
-    const media = mediaRef.current;
-    const play = playRef.current;
-    media.pause();
-    media.currentTime = 0;
-    play.setAttribute('data-icon', 'P'); 
-  }
-
-  function mediaBackward() {
-    return media ? media.currentTime -= 3 : '';
-  }
-
-  function mediaForward() {
-    return media ? media.currentTime += 3 : '';
+  function mediaDuration(media) {
+    setDuration(media.duration)
   }
 
   /**
@@ -67,61 +39,34 @@ function Video(props) {
 
   return (
     <div>
-      <video ref={mediaRef}>
+      <video 
+        ref={mediaRef}
+        controls={false}
+      >
         <source
           src={props.videoPath}
           type={`video/mp4`}
         />
       </video>
-      
 
       <div ref={controlsRef} className="video-controls">
-        <div className="top-controller">
-          {/* Timer */}
-          <div
-            className='timers'>
-              <Timer
-                media={media}
-                timerBar={timerBarRef}
-                timer={timerRef}  
-                timerWrapper={timerWrapperRef}
-              />
-            <div ref={timerWrapperRef} style={{width:"90%", backgroundColor: "black"}}>
-              <div className='timerBar' ref={timerBarRef}></div>
-            </div>
-            <div>
-              <span
-                style={{width:"10%"}} ref={timerRef} aria-label='timer'></span>
-            </div>
-          </div>
-        </div>
+        <Timer
+          media={media}
+          duration={duration}
+        />
 
         <div className='bottom-controller'>
-          <button
-            ref={playRef}
-            onClick={ () => playPauseMedia() }
-            className='play'
-            data-icon='P'
-            aria-label='play pause toggle'></button>
-          <button
-            ref={stopRef}
-            onClick={ () => stopMedia() }
-            className='stop'
-            data-icon='S'
-            aria-label='stop'></button>
-
-          <button
-            ref={rwdRef}
-            onClick={ () => mediaBackward() }
-            className='rwd'
-            data-icon='B' 
-            aria-label='rewind' />
-          <button
-            ref={fwdRef}
-            onClick={ () => mediaForward() }
-            className='fwd'
-            data-icon='F'
-            aria-label='fast forward' />
+          <Play 
+            play={playRef}
+            media={media}
+          />
+          <Stop 
+            media={media}
+            play={playRef}
+          />
+          <BackForward 
+            media={media}
+          />
         </div>
       </div>
     </div>
