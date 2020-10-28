@@ -11,6 +11,7 @@ function Video(props) {
 
   const [media, setMedia] = useState(null);
   const [duration, setDuration] = useState()
+  const [isPlay, setIsPlay] = useState(false);
 
   let mediaRef = useRef();
   let controlsRef = useRef();
@@ -33,21 +34,34 @@ function Video(props) {
     setDuration(media.duration)
   }
 
+  function keyboardEvents(event) {
+    if(event.type === 'click') {
+      setIsPlay(isPlay === false ? true :  false);
+    } 
+    else if(event.charCode === 32) {
+      setIsPlay(isPlay === false ? true :  false);
+    }
+  }
+
   /**
    * RENDERS
    */
 
   return (
     <div>
-      <video 
-        ref={mediaRef}
-        controls={false}
-      >
-        <source
-          src={props.videoPath}
-          type={`video/mp4`}
-        />
-      </video>
+      <div 
+        onKeyPress={(e) => keyboardEvents(e)}
+        onClick={(e) => keyboardEvents(e)} >
+        <video 
+          ref={mediaRef}
+          controls={false}
+        >
+          <source
+            src={props.videoPath}
+            type={`video/mp4`}
+          />
+        </video>
+      </div>
 
       <div ref={controlsRef} className="video-controls">
         <Timer
@@ -59,6 +73,7 @@ function Video(props) {
           <Play 
             play={playRef}
             media={media}
+            isPlay={isPlay}
           />
           <Stop 
             media={media}

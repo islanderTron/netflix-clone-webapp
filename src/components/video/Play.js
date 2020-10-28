@@ -1,20 +1,36 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 function Play(props) {
+  const media = props.media;
+  const play = props.play.current;
+
+  useEffect(() => {
+    keyboardEffect(props.isPlay);
+  }, [props.isPlay])
 
   /**
    * Event Handlers
    */
   function playPauseHandler() {
-    const media = props.media;
-    const play = props.play.current;
-
     if (media.paused) {
       play.setAttribute('data-icon', 'u');
       media.play();
     } else {
       play.setAttribute('data-icon', 'P');
       media.pause();
+    }
+  }
+
+  function keyboardEffect(isPlay) {
+    if(isPlay === true) {
+      play.setAttribute('data-icon', 'u');
+      media.play();
+    } 
+    else if(isPlay === false) {
+      if(play) {
+        play.setAttribute('data-icon', 'P');
+        media.pause();
+      }
     }
   }
 
