@@ -19,8 +19,22 @@ function Video(props) {
 
   useEffect(() => {
     // mediaRef.current.removeAttribute('controls');
+
+    mediaRef.current.addEventListener('keydown', event => {
+      // CONTINUE TO WORK ON KEYBOARD ISSUE FOR BROSWER COMPATIABILITY (CHROME & SAFARI)
+      
+      // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values
+      
+      // console.log(event)
+      if(event.keyCode === 32) {
+        mediaRef.current.play()
+      }
+    }); 
     controlsRef.current.style.visibility = 'visible';
     mediaRef.current.disablePictureInPicture = true;
+
+    // Focus on the video when a user's browser is opened 
+    mediaRef.current.focus()
 
     setMedia(mediaRef.current);
 
@@ -35,12 +49,14 @@ function Video(props) {
   }
 
   function keyboardEvents(event) {
-    if(event.type === 'click') {
-      setIsPlay(isPlay === false ? true :  false);
-    } 
-    else if(event.charCode === 32) {
-      setIsPlay(isPlay === false ? true :  false);
-    }
+    console.log(event)
+    
+    // if(event.type === 'click') {
+    //   setIsPlay(isPlay === false ? true :  false);
+    // } 
+    // else if(event.charCode === 32) {
+    //   setIsPlay(isPlay === false ? true :  false);
+    // }
   }
 
   /**
@@ -50,8 +66,10 @@ function Video(props) {
   return (
     <div>
       <div 
-        onKeyPress={(e) => keyboardEvents(e)}
-        onClick={(e) => keyboardEvents(e)} >
+        // onKeyUp={keyboardEvents}
+        // onClick={(e) => keyboardEvents(e)} 
+        // onKeyDown={(e) => keyboardEvents(e)}
+        >
         <video 
           ref={mediaRef}
           controls={false}
