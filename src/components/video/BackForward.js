@@ -25,13 +25,13 @@ function BackForward(props) {
       ref={rwdRef}
       onClick={ () => mediaBackward() }
       className='rwd'
-      data-icon='B' 
+      data-icon='U' 
       aria-label='rewind' />
     <button
       ref={fwdRef}
       onClick={ () => mediaForward() }
       className='fwd'
-      data-icon='F'
+      data-icon='U'
       aria-label='fast forward' />
     </>
   )

@@ -19,16 +19,16 @@ function Video(props) {
 
   useEffect(() => {
     // mediaRef.current.removeAttribute('controls');
-
     mediaRef.current.addEventListener('keydown', event => {
+      console.log(event)
       // CONTINUE TO WORK ON KEYBOARD ISSUE FOR BROSWER COMPATIABILITY (CHROME & SAFARI)
       
       // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values
       
       // console.log(event)
-      if(event.keyCode === 32) {
-        mediaRef.current.play()
-      }
+      // if(event.keyCode === 32) {
+      //   mediaRef.current.play()
+      // }
     }); 
     controlsRef.current.style.visibility = 'visible';
     mediaRef.current.disablePictureInPicture = true;
@@ -69,10 +69,12 @@ function Video(props) {
         // onKeyUp={keyboardEvents}
         // onClick={(e) => keyboardEvents(e)} 
         // onKeyDown={(e) => keyboardEvents(e)}
+        onKeyPress={(e) => keyboardEvents(e)}
+        onChange={(e) => keyboardEvents(e)}
         >
         <video 
           ref={mediaRef}
-          controls={false}
+          // controls={false}
         >
           <source
             src={props.videoPath}
@@ -81,25 +83,35 @@ function Video(props) {
         </video>
       </div>
 
+      {/* Custom Control */}
       <div ref={controlsRef} className="video-controls">
         <Timer
           media={media}
           duration={duration}
         />
 
-        <div className='bottom-controller'>
-          <Play 
-            play={playRef}
-            media={media}
-            isPlay={isPlay}
-          />
-          <Stop 
-            media={media}
-            play={playRef}
-          />
-          <BackForward 
-            media={media}
-          />
+        <div className='bottom-controller container mw-100'>
+          <div className='row'>
+            <div className="col-2 p-0 float-left left-controllers">
+              <Play 
+                play={playRef}
+                media={media}
+                isPlay={isPlay}
+              />
+              <BackForward 
+                media={media}
+              />
+              {/* Volume - will work */}
+              {/* <Volume /> */}
+            </div>
+            <div className="col-8">
+              <p className="text-left mb-0">Movie/TV Show name</p>
+            </div>
+            
+            <div className="col-2">
+              <p className="float-right">video menu</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

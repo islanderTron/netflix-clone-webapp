@@ -9,13 +9,33 @@
 }
 
 /* Displaay the icon before the button tags */
-button:before {
-  font-family: HeydingsControlsRegular;
-  font-size: 20px;
-  position: relative;
-  content: attr(data-icon);
-  color: #aaa;
-  text-shadow: 1px 1px 0px black;
+.play, .rwd, .fwd {
+  float: left;
+}
+button { 
+  outline: none;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  background-repeat: no-repeat;
+  width: 33.3% ;
+  
+  &:before {
+    font-family: HeydingsControlsRegular;
+    // font-size: 30px;
+    position: relative;
+    content: attr(data-icon);
+    color: #aaa;
+    text-shadow: 1px 1px 0px black;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.fwd {
+  transform: rotateY(180deg);
 }
 
 video {
