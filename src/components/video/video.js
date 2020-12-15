@@ -18,18 +18,6 @@ function Video(props) {
   let playRef = useRef();
 
   useEffect(() => {
-    // mediaRef.current.removeAttribute('controls');
-    mediaRef.current.addEventListener('keydown', event => {
-      console.log(event)
-      // CONTINUE TO WORK ON KEYBOARD ISSUE FOR BROSWER COMPATIABILITY (CHROME & SAFARI)
-      
-      // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values
-      
-      // console.log(event)
-      // if(event.keyCode === 32) {
-      //   mediaRef.current.play()
-      // }
-    }); 
     controlsRef.current.style.visibility = 'visible';
     mediaRef.current.disablePictureInPicture = true;
 
@@ -41,22 +29,24 @@ function Video(props) {
     mediaRef.current.ondurationchange = (event) => {
       mediaDuration(event.srcElement)
     }
-    // setDuration(mediaRef)
+
+    setDuration(mediaRef)
   }, [mediaRef.current]);
+
+
+  // This useEffect() uses keyboard event to allow the user to press the space button to play/pause the video.
+  useEffect(() => {
+    mediaRef.current.addEventListener('keydown', event => {
+      if(event.code === 'Space') { 
+        setIsPlay(isPlay === false ? true :  false);
+      }
+
+      console.log(isPlay);
+    });
+  }, [isPlay])
 
   function mediaDuration(media) {
     setDuration(media.duration)
-  }
-
-  function keyboardEvents(event) {
-    console.log(event)
-    
-    // if(event.type === 'click') {
-    //   setIsPlay(isPlay === false ? true :  false);
-    // } 
-    // else if(event.charCode === 32) {
-    //   setIsPlay(isPlay === false ? true :  false);
-    // }
   }
 
   /**
@@ -65,16 +55,10 @@ function Video(props) {
 
   return (
     <div>
-      <div 
-        // onKeyUp={keyboardEvents}
-        // onClick={(e) => keyboardEvents(e)} 
-        // onKeyDown={(e) => keyboardEvents(e)}
-        onKeyPress={(e) => keyboardEvents(e)}
-        onChange={(e) => keyboardEvents(e)}
-        >
+      <div>
         <video 
           ref={mediaRef}
-          // controls={false}
+          controls={false}
         >
           <source
             src={props.videoPath}
@@ -85,14 +69,13 @@ function Video(props) {
 
       {/* Custom Control */}
       <div ref={controlsRef} className="video-controls">
-        <Timer
+        {/* <Timer
           media={media}
           duration={duration}
-        />
+        /> */}
 
-        <div className='bottom-controller container mw-100'>
-          <div className='row'>
-            <div className="col-2 p-0 float-left left-controllers">
+        <div className='bottom-controller row'>
+            <div className="pl-5" width="200px">
               <Play 
                 play={playRef}
                 media={media}
@@ -101,17 +84,16 @@ function Video(props) {
               <BackForward 
                 media={media}
               />
-              {/* Volume - will work */}
-              {/* <Volume /> */}
+              {/* <Volume 
+                media={media}
+              /> */}
             </div>
             <div className="col-8">
               <p className="text-left mb-0">Movie/TV Show name</p>
-            </div>
-            
+            </div>  
             <div className="col-2">
               <p className="float-right">video menu</p>
             </div>
-          </div>
         </div>
       </div>
     </div>
