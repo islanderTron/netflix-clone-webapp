@@ -7,15 +7,23 @@ import Play from './Play';
 import Stop from './Stop'
 import BackForward from './BackForward';
 
-function Video(props) {
+// Redux
+import { useSelector } from 'react-redux';
+
+function Video({ videoPath }) {
 
   const [media, setMedia] = useState(null);
   const [duration, setDuration] = useState()
-  const [isPlay, setIsPlay] = useState(false);
+
+  const isPlaying = useSelector(state => state.playing);
 
   let mediaRef = useRef();
   let controlsRef = useRef();
   let playRef = useRef();
+
+  /**
+   * Lifecycle 
+   */
 
   useEffect(() => {
     controlsRef.current.style.visibility = 'visible';
@@ -34,19 +42,28 @@ function Video(props) {
   }, [mediaRef.current]);
 
 
-  // This useEffect() uses keyboard event to allow the user to press the space button to play/pause the video.
   useEffect(() => {
-    mediaRef.current.addEventListener('keydown', event => {
-      if(event.code === 'Space') { 
-        setIsPlay(isPlay === false ? true :  false);
-      }
+    playHandler();
+  }, [isPlaying])
 
-      console.log(isPlay);
-    });
-  }, [isPlay])
+  /** 
+   * Event Handler
+   */
 
   function mediaDuration(media) {
     setDuration(media.duration)
+  }
+
+  function playHandler() {
+    if(mediaRef) {
+      if(isPlaying === true) {
+        playRef.current.setAttribute('data-icon', 'u');
+        mediaRef.current.play();
+      } else {
+        playRef.current.setAttribute('data-icon', 'P');
+        mediaRef.current.pause(); 
+      }
+    }
   }
 
   /**
@@ -61,7 +78,7 @@ function Video(props) {
           controls={false}
         >
           <source
-            src={props.videoPath}
+            src={videoPath}
             type={`video/mp4`}
           />
         </video>
@@ -79,7 +96,6 @@ function Video(props) {
               <Play 
                 play={playRef}
                 media={media}
-                isPlay={isPlay}
               />
               <BackForward 
                 media={media}

@@ -1,37 +1,12 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 
-function Play(props) {
-  const media = props.media;
-  const play = props.play.current;
+// Redux
+import { connect } from 'react-redux';
 
-  useEffect(() => {
-    keyboardEffect(props.isPlay);
-  }, [props.isPlay])
-
-  /**
-   * Event Handlers
-   */
+function Play({ play, media, onPlaying, offPlaying }) {
+  
   function playPauseHandler() {
-    if (media.paused) {
-      play.setAttribute('data-icon', 'u');
-      media.play();
-    } else {
-      play.setAttribute('data-icon', 'P');
-      media.pause();
-    }
-  }
-
-  function keyboardEffect(isPlay) {
-    if(isPlay === true) {
-      play.setAttribute('data-icon', 'u');
-      media.play();
-    } 
-    else if(isPlay === false) {
-      if(play) {
-        play.setAttribute('data-icon', 'P');
-        media.pause();
-      }
-    }
+    return media.paused ? onPlaying() : offPlaying();
   }
 
   /**
@@ -40,7 +15,7 @@ function Play(props) {
 
   return (
     <button
-      ref={props.play}
+      ref={play}
       onClick={() => playPauseHandler()}
       className='play'
       data-icon='P'
@@ -48,4 +23,16 @@ function Play(props) {
   )
 }
 
-export default Play;
+const mapStateToProps = state => {
+  return { 
+    test: state.playing
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onPlaying: () => dispatch({ type: 'PLAYING'}),
+    offPlaying: () => dispatch({ type: 'NOTPLAYING'})
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps) (Play);;
