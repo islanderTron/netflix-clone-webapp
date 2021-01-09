@@ -8,9 +8,9 @@ import Stop from './Stop'
 import BackForward from './BackForward';
 
 // Redux
-import { useSelector } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 
-function Video({ videoPath }) {
+function Video({ videoPath, onPlaying, offPlaying }) {
 
   const [media, setMedia] = useState(null);
   const [duration, setDuration] = useState()
@@ -39,8 +39,15 @@ function Video({ videoPath }) {
     }
 
     setDuration(mediaRef)
+    
   }, [mediaRef.current]);
 
+  useEffect(() => {
+    // Browser compatability - Safari and Chrome 
+    window.addEventListener('keydown', (e) => {
+      playPauseHandler(e);
+    }, true)
+  }, [window])
 
   useEffect(() => {
     playHandler();
@@ -49,6 +56,7 @@ function Video({ videoPath }) {
   /** 
    * Event Handler
    */
+  
 
   function mediaDuration(media) {
     setDuration(media.duration)
@@ -66,6 +74,13 @@ function Video({ videoPath }) {
     }
   }
 
+  function playPauseHandler(e) {
+    if(e.keyCode === 32) {
+      return mediaRef.current.paused ? onPlaying() : offPlaying();
+    }
+  }
+
+
   /**
    * RENDERS
    */
@@ -76,6 +91,7 @@ function Video({ videoPath }) {
         <video 
           ref={mediaRef}
           controls={false}
+          // onKeyDown={(e) => playPauseHandler(e)}
         >
           <source
             src={videoPath}
@@ -85,14 +101,17 @@ function Video({ videoPath }) {
       </div>
 
       {/* Custom Control */}
-      <div ref={controlsRef} className="video-controls">
+      {/* <div ref={controlsRef} className="video-controls"> */}
+      <div ref={controlsRef}>
         {/* <Timer
           media={media}
           duration={duration}
         /> */}
 
-        <div className='bottom-controller row'>
-            <div className="pl-5" width="200px">
+        {/* <div className='bottom-controller row'> */}
+        <div>
+            {/* <div className="pl-5" width="200px"> */}
+            <div >
               <Play 
                 play={playRef}
                 media={media}
@@ -104,11 +123,15 @@ function Video({ videoPath }) {
                 media={media}
               /> */}
             </div>
-            <div className="col-8">
-              <p className="text-left mb-0">Movie/TV Show name</p>
+            {/* <div className="col-8"> */}
+            <div>
+              {/* <p className="text-left mb-0">Movie/TV Show name</p> */}
+              <p>Movie/TV Show name</p>
             </div>  
-            <div className="col-2">
-              <p className="float-right">video menu</p>
+            {/* <div className="col-2"> */}
+            <div>
+              {/* <p className="float-right">video menu</p> */}
+              <p>video menu</p>
             </div>
         </div>
       </div>
@@ -116,4 +139,18 @@ function Video({ videoPath }) {
   )
 }
 
-export default Video;
+
+const mapStateToProps = state => {
+  return { 
+    test: state.playing
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onPlaying: () => dispatch({ type: 'PLAYING'}),
+    offPlaying: () => dispatch({ type: 'NOTPLAYING'})
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Video);
