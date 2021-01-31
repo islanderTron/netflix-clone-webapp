@@ -1,32 +1,84 @@
 @font-face {
   font-family: 'HeydingsControlsRegular';
-  src: url('../fonts/heydings_controls-webfont.eot');
-  src: url('../fonts/heydings_controls-webfont.eot?#iefix') format('embedded-opentype'),
-       url('../fonts/heydings_controls-webfont.woff') format('woff'),
-       url('../fonts/heydings_controls-webfont.ttf') format('truetype');
+  src: url('https://assets.nflxext.com/ffe/siteui/fonts/netflix-sans/v3/NetflixSans_W_Rg.woff2');
   font-weight: normal;
   font-style: normal;
+}
+
+body {
+  background-color: #000;
+}
+
+// Video Controller
+.video-controls {
+  visibility: visible;
+  position: absolute;
+  width: 100%;
+  bottom: 75px;
+}
+.bottom-controller {
+  display: flex;
+  justify-content: space-between;
+}
+
+.videoPrimaryButtons, .videoName, .videoMenu { 
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  font-size: 12px;
+}
+
+.videoName {
+  white-space: nowrap;
+  width: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  h4 {
+    font-size: 2.2em;
+    padding: 0;
+    margin: 0 .5em 0 0;
+    display: inline;
+    white-space: nowrap;
+    color: #fff;
+  }
+  span {
+    font-size: 2em;
+    padding-right: .5em;
+    color: #adadad;
+    display: inline;
+  }
 }
 
 /* Displaay the icon before the button tags */
 .play, .rwd, .fwd {
   float: left;
 }
+
+
+// SVG
 button { 
   outline: none;
   overflow: hidden;
   border: none;
   background: transparent;
   background-repeat: no-repeat;
-  width: 33.3% ;
-  
-  &:before {
-    font-family: HeydingsControlsRegular;
-    // font-size: 30px;
-    position: relative;
-    content: attr(data-icon);
-    color: #aaa;
-    text-shadow: 1px 1px 0px black;
+  width: 1.5em;
+  height: 2em;
+  font-size: 2.8em;
+  box-sizing: border-box;
+  border-radius: .3em;
+
+  svg {
+    width: 1.6em;
+    height: 1.6em;
+    overflow: visible;
+    border: solid 1px transparent;
+    margin: 0 -1px;
+    stroke-width: 0;
+    stroke: #fff;
+    font-size: 22px;
+    fill: white;
   }
 
   &:focus {
@@ -34,8 +86,18 @@ button {
   }
 }
 
-.fwd {
-  transform: rotateY(180deg);
+
+// Video Wrapper
+.videoWrapper {
+  video {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 100%;
+  }
 }
 
 video {
@@ -43,6 +105,7 @@ video {
   margin-bottom: -4px;
 }
 
+// Timer 
 .timers {
   line-height: 38px;
   font-size: 10px;
