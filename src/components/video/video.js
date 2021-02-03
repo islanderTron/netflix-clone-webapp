@@ -100,11 +100,10 @@ function Video({ videoPath, onPlaying, offPlaying }) {
 
       {/* Custom Control */}
       <div ref={controlsRef} className="video-controls">
-        {/* <div ref={controlsRef}> */}
-        {/* <Timer
+        <Timer
           media={media}
           duration={duration}
-        /> */}
+        />
 
         <div className='bottom-controller'>
           <Play

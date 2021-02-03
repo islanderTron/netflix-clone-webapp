@@ -42,31 +42,31 @@ function Timer(props) {
 
   function renderTimerBar() {
     if(timerBar) {
-      let barLength = timerBar.clientWidth * (props.media.currentTime/props.media.duration);
-
-      return barLength + 'px';
+      let barLength = mediaCurrent/props.duration * 100
+      return barLength + '%';
     }
   }
   
   return (
-    <div className="top-controller" style={{ height: '30px'}}>
-      <div className='timers'>
+    <div className="top-controller">
+      <div className='timerWrapper'>
         <div 
+          className="timer"
           ref={timerWrapperRef} 
-          style={{ width:"90%", backgroundColor: "black", float: 'left' }}
         >
           <div 
             className='timerBar' 
             ref={timerBarRef}
-            style={{ width: renderTimerBar(), height: '38px', backgroundColor: 'gray' }}
-            >
-            </div>
-        </div>
-        <div style={{ width:"10%", float: 'left', backgroundColor: "black" }}>
-          <span 
-            ref={timerRef} aria-label='timer'>{renderTimer()}</span>
+            style={{ width: renderTimerBar() }}
+            ></div>
+
+            <div className="button" style={{left: renderTimerBar() }}></div>
         </div>
       </div>
+      <div className='time-reminder'>
+          <p 
+            ref={timerRef} aria-label='timer'>{renderTimer()}</p>
+        </div>
     </div>
   )
 }
