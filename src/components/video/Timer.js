@@ -16,13 +16,39 @@ function Timer(props) {
 
   useEffect(() => {
     if(props.media) {
+
+      // console.log(props.media.currentTime)
       props.media.ontimeupdate = (event) => {
         updateTime(event.srcElement)
       }
 
+      // onloadstart
+      // ondurationchange
+      // loadedmetadata
+      // loadedmetadataprogress
+      // canplay
+      // canplaythrough
+
       setTimerBar(timerWrapperRef.current);
     }
   }, [props.media, ontimeupdate, timerWrapperRef]);
+
+  useEffect(() => {
+
+    // https://github.com/iandevlin/iandevlin.github.io/blob/master/mdn/video-player-styled/js/video-player.js
+    // React to the user clicking within the progress barReact to the user clicking within the progress bar
+    timerWrapperRef.current.addEventListener("click", (e) => {
+      let timerBar = timerBarRef.current;
+      if(timerBar) {
+        let pos = (e.pageX - (timerBar.offsetLeft + timerBar.offsetParent.offsetLeft));
+
+        console.log(pos);
+        // if(props.media.currentTime) {
+        //   props.media.currentTime = pos * props.media.duration;
+        // }
+      }
+    })
+  }, [timerWrapperRef, timerBarRef])
 
   /**
    * Event Handlers
@@ -42,7 +68,7 @@ function Timer(props) {
 
   function renderTimerBar() {
     if(timerBar) {
-      let barLength = mediaCurrent/props.duration * 100
+      let barLength = mediaCurrent/props.duration * 100;
       return barLength + '%';
     }
   }
@@ -60,7 +86,7 @@ function Timer(props) {
             style={{ width: renderTimerBar() }}
             ></div>
 
-            <div className="button" style={{left: renderTimerBar() }}></div>
+            <div className="button" style={{left: renderTimerBar() }} ></div>
         </div>
       </div>
       <div className='time-reminder'>
